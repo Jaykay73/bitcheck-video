@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitCheck Video Verification Test</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --radius: 12px;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        input[type="text"], input[type="number"], select {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .file-upload {
+            position: relative;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .file-upload:hover, .file-upload.dragover {
+            border-color: var(--primary-color);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-text {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            pointer-events: none;
+        }
+        
+        .file-name {
+            display: block;
+            margin-top: 10px;
+            color: var(--primary-color);
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--text-main);
+            font-weight: 400;
+        }
+
+        .checkbox-label input {
+            appearance: none;
+            background-color: #0f172a;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 1px solid var(--border-color);
+            border-radius: 0.15em;
+            display: grid;
+            place-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-label input::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em var(--primary-color);
+            background-color: var(--primary-color);
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .checkbox-label input:checked::before {
+            transform: scale(1);
+        }
+
+        .checkbox-label input:checked {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .health-status {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background: var(--border-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .health-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+        
+        .health-status.online .health-indicator {
+            background: var(--success-color);
+            box-shadow: 0 0 8px var(--success-color);
+        }
+        
+        .health-status.offline .health-indicator {
+            background: var(--danger-color);
+            box-shadow: 0 0 8px var(--danger-color);
+        }
+
+        .json-output {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            color: #a5b4fc;
+            overflow-x: auto;
+            flex-grow: 1;
+            white-space: pre-wrap;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .error-text {
+            color: var(--danger-color);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success-color); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning-color); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger-color); }
+
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .image-preview {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+    <!-- Add Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>BitCheck Video Analyzer</h1>
+        <p class="subtitle">Test the Hugging Face Space API deployment</p>
+
+        <div class="layout">
+            <div class="form-section">
+                <form id="verifyForm">
+                    <div class="form-group">
+                        <label for="apiUrl">API Base URL</label>
+                        <input type="text" id="apiUrl" value="https://jaykay73-bitcheck-video.hf.space" placeholder="https://your-space.hf.space">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hfToken">Hugging Face Token (Optional, if space is private)</label>
+                        <input type="text" id="hfToken" placeholder="hf_...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Video File (Max 5s, 50MB recommended)</label>
+                        <div class="file-upload" id="dropZone">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p class="file-upload-text">Click to browse or drag and drop a video here</p>
+                            <span class="file-name" id="fileName"></span>
+                            <input type="file" id="videoFile" accept="video/*" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sampleMode">Sample Mode</label>
+                        <select id="sampleMode">
+                            <option value="uniform">Uniform</option>
+                            <option value="random">Random</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxFrames">Max Frames</label>
+                        <input type="number" id="maxFrames" value="12" min="1" max="30">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Analysis Options</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="runImageAnalysis" checked> Visual Analysis
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="runAudioAnalysis" checked> Audio Analysis
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="runForensics" checked> Forensics
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="runGradcam" checked> Grad-CAM
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="runWatermark" checked> Watermark Check
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="allowTrim" checked> Trim to 5s
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn">
+                        <span class="btn-text">Analyze Video</span>
+                        <div class="loader" id="btnLoader"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="results-section">
+                <div class="results-header">
+                    <h2 class="results-title">Response</h2>
+                    <div class="health-status" id="healthStatus" title="Click to check health">
+                        <div class="health-indicator"></div>
+                        <span id="healthText">Checking health...</span>
+                    </div>
+                </div>
+                <div id="jsonOutput" class="json-output">Ready to analyze. Submit a video to see results here.</div>
+                
+                <div id="visualOutputs" style="display: none;">
+                    <h3 style="font-size: 1rem; margin-top: 1rem; margin-bottom: 0;">Extracted Frames</h3>
+                    <div id="imageGallery" class="image-preview-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('verifyForm');
+            const fileInput = document.getElementById('videoFile');
+            const dropZone = document.getElementById('dropZone');
+            const fileNameDisplay = document.getElementById('fileName');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.querySelector('.btn-text');
+            const btnLoader = document.getElementById('btnLoader');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const healthStatus = document.getElementById('healthStatus');
+            const healthText = document.getElementById('healthText');
+            const visualOutputs = document.getElementById('visualOutputs');
+            const imageGallery = document.getElementById('imageGallery');
+            const apiUrlInput = document.getElementById('apiUrl');
+
+            // --- Health Check ---
+            async function checkHealth() {
+                try {
+                    healthText.textContent = 'Checking...';
+                    healthStatus.className = 'health-status';
+                    
+                    const baseUrl = apiUrlInput.value.replace(/\/$/, '');
+                    const response = await fetch(`${baseUrl}/health`);
+                    
+                    if (response.ok) {
+                        healthStatus.classList.add('online');
+                        healthText.textContent = 'API Online';
+                    } else {
+                        healthStatus.classList.add('offline');
+                        healthText.textContent = 'API Error';
+                    }
+                } catch (error) {
+                    healthStatus.classList.add('offline');
+                    healthText.textContent = 'API Offline';
+                }
+            }
+            
+            checkHealth();
+            healthStatus.addEventListener('click', checkHealth);
+            apiUrlInput.addEventListener('blur', checkHealth);
+
+            // --- File Upload UI ---
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    fileNameDisplay.textContent = file.name;
+                    fileNameDisplay.title = `Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            });
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => {
+                    dropZone.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => {
+                    dropZone.classList.remove('dragover');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                fileInput.files = files;
+                
+                if (files.length > 0) {
+                    fileNameDisplay.textContent = files[0].name;
+                }
+            }, false);
+
+            // --- Form Submission ---
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    alert('Please select a video file.');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const baseUrl = apiUrlInput.value.replace(/\/$/, '');
+                const token = document.getElementById('hfToken').value.trim();
+                
+                // Set loading state
+                submitBtn.disabled = true;
+                btnText.textContent = 'Analyzing...';
+                btnLoader.style.display = 'block';
+                jsonOutput.textContent = 'Uploading and analyzing video...\nThis may take up to a minute depending on the file size and Hugging Face infrastructure.';
+                jsonOutput.className = 'json-output';
+                visualOutputs.style.display = 'none';
+                imageGallery.innerHTML = '';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('sample_mode', document.getElementById('sampleMode').value);
+                    formData.append('max_frames', document.getElementById('maxFrames').value);
+                    formData.append('run_image_analysis', document.getElementById('runImageAnalysis').checked);
+                    formData.append('run_gradcam', document.getElementById('runGradcam').checked);
+                    formData.append('run_audio_analysis', document.getElementById('runAudioAnalysis').checked);
+                    formData.append('run_forensics', document.getElementById('runForensics').checked);
+                    formData.append('run_watermark_analysis', document.getElementById('runWatermark').checked);
+                    formData.append('allow_trim_to_5_seconds', document.getElementById('allowTrim').checked);
+
+                    const headers = {};
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+
+                    const response = await fetch(`${baseUrl}/verify/video`, {
+                        method: 'POST',
+                        headers: headers, // Fetch automatically sets Content-Type boundary for FormData
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (!response.ok) {
+                        jsonOutput.className = 'json-output error-text';
+                    }
+
+                    // Format nicely
+                    jsonOutput.textContent = JSON.stringify(result, null, 2);
+                    
+                    // Display images if any
+                    extractAndDisplayImages(result, baseUrl, token);
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    jsonOutput.className = 'json-output error-text';
+                    jsonOutput.textContent = `Error: ${error.message}\n\nMake sure the Hugging Face Space is running and CORS is properly configured on the backend if accessing from a different origin.`;
+                } finally {
+                    // Reset loading state
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Analyze Video';
+                    btnLoader.style.display = 'none';
+                }
+            });
+            
+            function extractAndDisplayImages(data, baseUrl, token) {
+                const imageUrls = [];
+                
+                // Helper to search JSON for image URLs
+                function searchForUrls(obj) {
+                    if (!obj) return;
+                    
+                    if (typeof obj === 'string') {
+                        if (obj.startsWith('/outputs/') && (obj.endsWith('.jpg') || obj.endsWith('.png'))) {
+                            imageUrls.push(obj);
+                        }
+                    } else if (Array.isArray(obj)) {
+                        obj.forEach(searchForUrls);
+                    } else if (typeof obj === 'object') {
+                        Object.values(obj).forEach(searchForUrls);
+                    }
+                }
+                
+                searchForUrls(data);
+                
+                if (imageUrls.length > 0) {
+                    visualOutputs.style.display = 'block';
+                    
+                    imageUrls.forEach(path => {
+                        const imgUrl = `${baseUrl}${path}`;
+                        const img = document.createElement('img');
+                        img.className = 'image-preview';
+                        
+                        // If token is needed for images, we might have to fetch them as blobs
+                        // For simplicity, assuming public access to outputs or relying on browser
+                        if (token) {
+                            fetchImageWithToken(imgUrl, token).then(blobUrl => {
+                                if(blobUrl) img.src = blobUrl;
+                            });
+                        } else {
+                            img.src = imgUrl;
+                        }
+                        
+                        img.title = path.split('/').pop();
+                        img.onclick = () => window.open(img.src, '_blank');
+                        img.style.cursor = 'pointer';
+                        
+                        imageGallery.appendChild(img);
+                    });
+                }
+            }
+            
+            async function fetchImageWithToken(url, token) {
+                try {
+                    const response = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const blob = await response.blob();
+                    return URL.createObjectURL(blob);
+                } catch (e) {
+                    console.error('Failed to fetch image with token', e);
+                    return null;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
