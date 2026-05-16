@@ -12,4 +12,6 @@ models/*
 !uploads/.gitkeep
 !outputs/.gitkeep
 !models/.gitkeep
+!models/*.pth
+!models/*.joblib
 
