@@ -1,3 +1,12 @@
+---
+title: BitCheck Video Verification
+emoji: 🎥
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+app_port: 7860
+---
 # BitCheck Video Verification Service
 
 BitCheck Video Verification API is a CPU-friendly FastAPI service for short-video AI generation and deepfake risk review. It combines metadata, sampled frames, weak/moderate image inference, visual forensic heuristics, watermark/provenance hints, optional Grad-CAM, audio feature extraction, Random Forest audio inference, temporal analysis, and multi-signal trust scoring.
